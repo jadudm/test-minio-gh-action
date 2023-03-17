@@ -14,4 +14,7 @@ jobs:
       - name: AWS CLI Action
         uses: KaMeHb-UA/aws-cli-action@v3
         with:
-          command: AWS_ACCESS_KEY_ID=miniominio AWS_SECRET_ACCESS_KEY=miniominio aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://this-is-a-test-bucket 
+          command: |
+            AWS_ACCESS_KEY_ID=miniominio 
+            AWS_SECRET_ACCESS_KEY=miniominio 
+            aws --endpoint-url http://localhost:9000/ s3 mb s3://this-is-a-test-bucket 
