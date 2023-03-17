@@ -33,9 +33,9 @@ services:
         ./aws/install ; 
         curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc ;
         chmod +x /usr/local/bin/mc ;
-        if aws s3 ls "s3://$S3_BUCKET" 2>&1 | grep -q 'NoSuchBucket'
+        if aws s3 ls "s3://${THE_DUDES_BUCKET}" 2>&1 | grep -q 'NoSuchBucket'
         then
-          /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://this-is-a-test-bucket
+          /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://${THE_DUDES_BUCKET}
         else
           echo The bucket abides. This is the way.  ;
           mc alias set theminio http://minio:9000 miniominio miniominio ;
@@ -47,6 +47,7 @@ services:
       AWS_SECRET_ACCESS_KEY: miniominio
       # This probably doesn't matter.
       AWS_DEFAULT_REGION: us-east-1
+      THE_DUDES_BUCKET: this-bucket-holds-the-room-together
     networks:
       - objects
 
