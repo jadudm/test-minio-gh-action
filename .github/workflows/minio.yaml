@@ -2,7 +2,7 @@ name: minio test harness
 on: [ push ]
 jobs:
   minio-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Run the stack and watch it go
