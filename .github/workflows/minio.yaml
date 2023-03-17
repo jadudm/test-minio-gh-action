@@ -1,0 +1,13 @@
+name: minio test harness
+on: [ push ]
+jobs:
+  minio-startup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: startup minio
+        uses: infleet/minio-action@v0.0.1
+        with:
+          port: "9000"
+          version: "latest"
+          username: "minio"
+          password: "minio"
