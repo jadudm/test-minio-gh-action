@@ -11,11 +11,7 @@ jobs:
           version: "latest"
           username: "miniominio"
           password: "miniominio"
-      - name: S3 Sync
-        uses: ItsKarma/aws-cli@v1.70.0
+      - name: AWS CLI Action
+        uses: KaMeHb-UA/aws-cli-action@v3
         with:
-          args: aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://this-is-a-test-bucket
-        env:
-          AWS_ACCESS_KEY_ID: miniominio
-          AWS_SECRET_ACCESS_KEY: miniominio
-          AWS_DEFAULT_REGION: "us-east-1"
+          command: aws --endpoint-url http://127.0.0.1:9000/ s3 mb s3://this-is-a-test-bucket 
