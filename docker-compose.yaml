@@ -20,35 +20,12 @@ services:
     networks:
       - objects
   aws:
-    image: ubuntu:20.04
-    command:
-      - bash 
-      - -c 
-      - |
-        apt-get update ;
-        apt-get upgrade ;
-        apt-get install -y curl unzip ; 
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" ;
-        unzip awscliv2.zip ;
-        ./aws/install ; 
-        curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc ;
-        chmod +x /usr/local/bin/mc ;
-        aws s3 ls "s3://${THE_DUDES_BUCKET}" 2>&1 | grep -q 'NoSuchBucket' ;
-        if aws s3 ls "s3://${THE_DUDES_BUCKET}" 2>&1 | grep -q 'NoSuchBucket'
-        then
-          /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://${THE_DUDES_BUCKET}
-        else
-          echo The bucket abides. This is the way.  ;
-          mc alias set theminio http://minio:9000 miniominio miniominio ;
-          # Given that we found the bucket, shut down minio, so that the other container will die.
-          mc admin service stop theminio
-        fi
-    environment:
-      AWS_ACCESS_KEY_ID: miniominio
-      AWS_SECRET_ACCESS_KEY: miniominio
-      # This probably doesn't matter.
-      AWS_DEFAULT_REGION: us-east-1
-      THE_DUDES_BUCKET: this-bucket-holds-the-room-together
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ${PWD}/test.bash:/tmp/test.bash
+    command: /tmp/test.bash
     networks:
       - objects
 
