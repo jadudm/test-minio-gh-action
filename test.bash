@@ -13,7 +13,8 @@ then
     echo The bucket abides. This is the way.
 else
     echo Creating the bucket ${THE_DUDES_BUCKET}
-    /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://${THE_DUDES_BUCKET}
+    # /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://${THE_DUDES_BUCKET}
+    mc mb theminio/${THE_DUDES_BUCKET}
 fi
 
 mc admin service stop theminio
