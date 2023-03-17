@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server --console-address ":9001" /data
+    expose:
+      - "9000"
+      - "9001"
+    environment:
+      MINIO_ROOT_USER: miniominio
+      MINIO_ROOT_PASSWORD:  miniominio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - data:/data
+    networks:
+      - objects
+  aws:
+    image: ubuntu:20.04
+    command:
+      - bash 
+      - -c 
+      - |
+        apt-get update ;
+        apt-get upgrade ;
+        apt-get install -y curl unzip ; 
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" ;
+        unzip awscliv2.zip ;
+        ./aws/install ; 
+        curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc ;
+        chmod +x /usr/local/bin/mc ;
+        if aws s3 ls "s3://$S3_BUCKET" 2>&1 | grep -q 'NoSuchBucket'
+        then
+          /usr/local/bin/aws --endpoint-url http://minio:9000/ s3 mb s3://this-is-a-test-bucket
+        else
+          echo The bucket abides. This is the way.  ;
+          mc alias set theminio http://minio:9000 miniominio miniominio ;
+          # Given that we found the bucket, shut down minio, so that the other container will die.
+          mc admin service stop theminio
+        fi
+    environment:
+      AWS_ACCESS_KEY_ID: miniominio
+      AWS_SECRET_ACCESS_KEY: miniominio
+      # This probably doesn't matter.
+      AWS_DEFAULT_REGION: us-east-1
+    networks:
+      - objects
+
+networks:
+  objects:
+volumes:
+  data:
+      # aws s3api create-bucket \
+      # --endpoint-url http://localhost:9000/ \
+      # --bucket theres-a-hole-in-the-bucket
+      # bash -c 'aws --endpoint-url http://localhost:9000/ s3 mb s3://this-is-a-test-bucket' 
